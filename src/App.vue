@@ -72,16 +72,26 @@ main {
 }
 
 .input__wrapper {
+  --border-width: clamp(0.1rem, 0.6vw, 0.5rem);
+
   display: inline-flex;
   position: relative;
-  vertical-align: bottom;
-  border: 0.2rem solid currentColor;
+  border: var(--border-width) solid currentColor;
+
+  &:focus-within {
+    border: var(--border-width) solid turquoise;
+  }
 }
 
 .input__dummy {
   min-width: 2ch;
   min-height: calc(var(--lineHeight) * 1em);
   visibility: hidden;
+
+  // The dummy needs a character, otherwise the field will jump when empty
+  &:empty::before{
+    content: "l";
+  }
 }
 
 .input__dummy, input {
@@ -101,6 +111,10 @@ input {
   border: none;
   background-color: initial;
   color: currentColor;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 </style>
