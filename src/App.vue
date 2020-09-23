@@ -4,7 +4,8 @@
   This is a talk about
   <span class="input__wrapper">
     <span class="input__dummy" aria-hidden="true">{{ backgroundColor }}</span>
-    <input type="text" v-model="backgroundColor">
+    <label class="visually-hidden" for="color">enter a color</label>
+    <input type="text" v-model="backgroundColor" id="color">
   </span>
   </span>
 </main>
@@ -30,6 +31,19 @@ export default {
   box-sizing: border-box;
 }
 
+.visually-hidden {
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  margin: -1px;
+}
+
 html, body, #app, main {
   width: 100%;
   height: 100%;
@@ -49,6 +63,7 @@ main {
   width: 100%;
   height: 100%;
   padding: 2rem;
+  color: #111;
   background-color: var(--backgroundColor);
   font-family: "IBM Plex Serif", Helvetica, sans-serif;
   font-size: clamp(1rem, 7vw, 7rem);
@@ -60,7 +75,7 @@ main {
   display: inline-flex;
   position: relative;
   vertical-align: bottom;
-  border: 0.2rem solid black;
+  border: 0.2rem solid currentColor;
 }
 
 .input__dummy {
@@ -85,6 +100,7 @@ input {
   line-height: inherit;
   border: none;
   background-color: initial;
+  color: currentColor;
 }
 
 </style>
