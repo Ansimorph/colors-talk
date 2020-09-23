@@ -43,7 +43,8 @@ export default {
 </script>
 
 <style lang="scss" vars="{ backgroundColor, textColor, lineHeight }">
-@import "./assets/fonts/plex/css/ibm-plex.css";
+$font-prefix: "./assets/fonts/plex/";
+@import "./assets/fonts/plex/scss/serif/regular/index";
 
 *,
 *:after,
