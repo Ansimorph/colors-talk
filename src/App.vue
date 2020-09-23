@@ -1,60 +1,53 @@
 <template>
-<main>
-  <span>
-  This is a talk about
-  <span class="input__wrapper">
-    <span class="input__dummy" aria-hidden="true">{{ backgroundColor }}</span>
-    <label class="visually-hidden" for="color">enter a color</label>
-    <input type="text" v-model="backgroundColor" id="color">
-  </span>
-  </span>
-</main>
+  <main>
+    <span>
+      This is a talk about
+      <span class="input__wrapper">
+        <span class="input__dummy" aria-hidden="true">{{
+          backgroundColor
+        }}</span>
+        <label class="visually-hidden" for="color">enter a color</label>
+        <input type="text" v-model="backgroundColor" id="color" />
+      </span>
+    </span>
+  </main>
 </template>
 
 <script>
-import { ref, watch } from 'vue';
-import Color from "color";
+import { ref, watch } from "vue";
+import { readableColor } from "color2k";
 
-const DEFAULT_BACKGROUND = "white";
+const DEFAULT_TEXT_COLOR = "black";
 
 export default {
   setup() {
-    const backgroundColor = ref('colors');
-    const textColor = ref('black');
-    const lineHeight = ref('1.3');
+    const backgroundColor = ref("colors");
+    const textColor = ref(DEFAULT_TEXT_COLOR);
+    const lineHeight = ref("1.3");
 
-    watch(
-      backgroundColor,
-      (newBackgroundColor) => {
-        let backgroundColorObject;
-        const textColorObject = Color(textColor.value);
-
-        try {
-          backgroundColorObject = Color(newBackgroundColor);
-          }
-        catch {
-          backgroundColorObject = Color(DEFAULT_BACKGROUND);
-        }
-
-        const contrast = backgroundColorObject.contrast(textColorObject);
-
-        if (contrast <= 3) {
-          textColor.value = textColorObject.negate().string();
-        }
+    watch(backgroundColor, (newBackgroundColor) => {
+      try {
+        textColor.value = readableColor(newBackgroundColor);
+      } catch {
+        textColor.value = DEFAULT_TEXT_COLOR;
       }
-    )
+    });
 
     return {
-      backgroundColor, textColor, lineHeight
-    }
-  }
-}
+      backgroundColor,
+      textColor,
+      lineHeight,
+    };
+  },
+};
 </script>
 
 <style lang="scss" vars="{ backgroundColor, textColor, lineHeight }">
 @import "./assets/fonts/plex/css/ibm-plex.css";
 
-*, *:after, *::before {
+*,
+*:after,
+*::before {
   box-sizing: border-box;
 }
 
@@ -71,7 +64,10 @@ export default {
   margin: -1px;
 }
 
-html, body, #app, main {
+html,
+body,
+#app,
+main {
   width: 100%;
   height: 100%;
 }
@@ -116,12 +112,13 @@ main {
   visibility: hidden;
 
   // The dummy needs a character, otherwise the field will jump when empty
-  &:empty::before{
+  &:empty::before {
     content: "l";
   }
 }
 
-.input__dummy, input {
+.input__dummy,
+input {
   padding: 0 0.5rem;
 }
 
@@ -143,5 +140,4 @@ input {
     outline: none;
   }
 }
-
 </style>
