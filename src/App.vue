@@ -19,8 +19,8 @@ import { readableColor } from "color2k";
 
 const DEFAULT_TEXT_COLOR = "black";
 const DEFAULT_LINE_HEIGHT = 1.3;
-const FONT_SIZE_BIG = 7; // vw
-const FONT_SIZE_SMALL = 5; // vw
+const FONT_SIZE_BIG = 6; // vw
+const FONT_SIZE_SMALL = 4; // vw
 
 function getReadableTextColor(backgroundColor) {
   try {
