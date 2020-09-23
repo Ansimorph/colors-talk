@@ -18,30 +18,32 @@ import { ref, watch } from "vue";
 import { readableColor } from "color2k";
 
 const DEFAULT_TEXT_COLOR = "black";
+const DEFAULT_LINE_HEIGHT = 1.3;
 const FONT_SIZE_BIG = 7; // vw
 const FONT_SIZE_SMALL = 5; // vw
+
+function getReadableTextColor(backgroundColor) {
+  try {
+    return readableColor(backgroundColor);
+  } catch {
+    return DEFAULT_TEXT_COLOR;
+  }
+}
+
+function getReadableTextSize(backgroundColor) {
+  return backgroundColor.length > 8 ? FONT_SIZE_SMALL : FONT_SIZE_BIG;
+}
 
 export default {
   setup() {
     const backgroundColor = ref("colors");
     const textColor = ref(DEFAULT_TEXT_COLOR);
-    const lineHeight = ref("1.3");
+    const lineHeight = ref(DEFAULT_LINE_HEIGHT);
     const fontSize = ref(FONT_SIZE_BIG);
 
     watch(backgroundColor, (newBackgroundColor) => {
-      try {
-        textColor.value = readableColor(newBackgroundColor);
-      } catch {
-        textColor.value = DEFAULT_TEXT_COLOR;
-      }
-    });
-
-    watch(backgroundColor, (newBackgroundColor) => {
-      if (newBackgroundColor.length > 8) {
-        fontSize.value = FONT_SIZE_SMALL;
-      } else {
-        fontSize.value = FONT_SIZE_BIG;
-      }
+      textColor.value = getReadableTextColor(newBackgroundColor);
+      fontSize.value = getReadableTextSize(newBackgroundColor);
     });
 
     return {
