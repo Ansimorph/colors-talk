@@ -12,19 +12,46 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue';
+import Color from "color";
+
+const DEFAULT_BACKGROUND = "white";
 
 export default {
-  name: 'App',
-  data() {
+  setup() {
+    const backgroundColor = ref('colors');
+    const textColor = ref('black');
+    const lineHeight = ref('1.3');
+
+    watch(
+      backgroundColor,
+      (newBackgroundColor) => {
+        let backgroundColorObject;
+        const textColorObject = Color(textColor.value);
+
+        try {
+          backgroundColorObject = Color(newBackgroundColor);
+          }
+        catch {
+          backgroundColorObject = Color(DEFAULT_BACKGROUND);
+        }
+
+        const contrast = backgroundColorObject.contrast(textColorObject);
+
+        if (contrast <= 3) {
+          textColor.value = textColorObject.negate().string();
+        }
+      }
+    )
+
     return {
-      backgroundColor: 'colors',
-      lineHeight: '1.3'
+      backgroundColor, textColor, lineHeight
     }
   }
 }
 </script>
 
-<style lang="scss" vars="{ backgroundColor, lineHeight }">
+<style lang="scss" vars="{ backgroundColor, textColor, lineHeight }">
 @import "./assets/fonts/plex/css/ibm-plex.css";
 
 *, *:after, *::before {
@@ -63,7 +90,7 @@ main {
   width: 100%;
   height: 100%;
   padding: 2rem;
-  color: #111;
+  color: var(--textColor);
   background-color: var(--backgroundColor);
   font-family: "IBM Plex Serif", Helvetica, sans-serif;
   font-size: clamp(1rem, 7vw, 7rem);
