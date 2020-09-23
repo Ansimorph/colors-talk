@@ -18,12 +18,15 @@ import { ref, watch } from "vue";
 import { readableColor } from "color2k";
 
 const DEFAULT_TEXT_COLOR = "black";
+const FONT_SIZE_BIG = 7; // vw
+const FONT_SIZE_SMALL = 5; // vw
 
 export default {
   setup() {
     const backgroundColor = ref("colors");
     const textColor = ref(DEFAULT_TEXT_COLOR);
     const lineHeight = ref("1.3");
+    const fontSize = ref(FONT_SIZE_BIG);
 
     watch(backgroundColor, (newBackgroundColor) => {
       try {
@@ -33,16 +36,25 @@ export default {
       }
     });
 
+    watch(backgroundColor, (newBackgroundColor) => {
+      if (newBackgroundColor.length > 8) {
+        fontSize.value = FONT_SIZE_SMALL;
+      } else {
+        fontSize.value = FONT_SIZE_BIG;
+      }
+    });
+
     return {
       backgroundColor,
       textColor,
       lineHeight,
+      fontSize,
     };
   },
 };
 </script>
 
-<style lang="scss" vars="{ backgroundColor, textColor, lineHeight }">
+<style lang="scss" vars="{ backgroundColor, textColor, lineHeight, fontSize }">
 $font-prefix: "./assets/fonts/plex/";
 @import "./assets/fonts/plex/scss/serif/regular/index";
 
@@ -90,7 +102,7 @@ main {
   color: var(--textColor);
   background-color: var(--backgroundColor);
   font-family: "IBM Plex Serif", Helvetica, sans-serif;
-  font-size: clamp(1rem, 7vw, 7rem);
+  font-size: clamp(1rem, calc(var(--fontSize) * 1vw), 7rem);
   font-weight: 400;
   line-height: var(--lineHeight);
 }
