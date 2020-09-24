@@ -110,7 +110,7 @@ main {
 }
 
 .input__wrapper {
-  --border-width: clamp(0.1rem, 0.6vw, 0.5rem);
+  --border-width: clamp(0.1rem, calc(var(--fontSize) * 0.1vw), 0.5rem);
 
   display: inline-flex;
   position: relative;
