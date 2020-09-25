@@ -14,9 +14,11 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { readableColor } from "color2k";
+import queryString from "query-string";
 
+const DEFAULT_BACKGROUND_COLOR = "colors"
 const DEFAULT_TEXT_COLOR = "black";
 const DEFAULT_LINE_HEIGHT = 1.3;
 const FONT_SIZE_BIG = 6; // vw
@@ -31,12 +33,23 @@ function getReadableTextColor(backgroundColor) {
 }
 
 function getReadableTextSize(backgroundColor) {
+  if (!backgroundColor) return FONT_SIZE_BIG;
   return backgroundColor.length > 8 ? FONT_SIZE_SMALL : FONT_SIZE_BIG;
+}
+
+function getBackgroundColorFromUrl() {
+  const parsedQueryString = queryString.parse(location.hash);
+  return parsedQueryString?.bgColor ? parsedQueryString.bgColor : DEFAULT_BACKGROUND_COLOR;
+}
+
+function setBackgroundColorInUrl(backgroundColor) {
+  const parameter = {bgColor: backgroundColor}
+  location.hash = queryString.stringify(parameter);
 }
 
 export default {
   setup() {
-    const backgroundColor = ref("colors");
+    const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR);
     const textColor = ref(DEFAULT_TEXT_COLOR);
     const lineHeight = ref(DEFAULT_LINE_HEIGHT);
     const fontSize = ref(FONT_SIZE_BIG);
@@ -44,6 +57,11 @@ export default {
     watch(backgroundColor, (newBackgroundColor) => {
       textColor.value = getReadableTextColor(newBackgroundColor);
       fontSize.value = getReadableTextSize(newBackgroundColor);
+      setBackgroundColorInUrl(newBackgroundColor);
+    });
+
+    onMounted(() => {
+      backgroundColor.value = getBackgroundColorFromUrl();
     });
 
     return {
