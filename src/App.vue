@@ -11,7 +11,7 @@
           type="text"
           v-model="backgroundColor"
           id="color"
-          @keydown="incrementNumericValueOnKeyPress"
+          @keydown="updateNumber"
         />
       </span>
     </span>
@@ -19,9 +19,10 @@
 </template>
 
 <script>
-import { nextTick, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { readableColor } from "color2k";
 import queryString from "query-string";
+import {restoreCursorPosition, incrementNumericValueOnKeyPress} from "./inputHelpers"
 
 const DEFAULT_BACKGROUND_COLOR = "colors";
 const DEFAULT_TEXT_COLOR = "black";
@@ -54,45 +55,6 @@ function setBackgroundColorInUrl(backgroundColor) {
   location.hash = queryString.stringify(parameter);
 }
 
-function getIncrement(keyCode, altKey) {
-  const stepSize = altKey ? 1 : 10;
-
-  switch (keyCode) {
-    case "ArrowUp":
-      return stepSize;
-    case "ArrowDown":
-      return -stepSize;
-    default:
-      return;
-  }
-}
-
-function getCursorPosition(element) {
-  return element.selectionStart;
-}
-
-function getNumbersFromString(text) {
-  const numberRegex = /[0-9]+/g;
-  return text.matchAll(numberRegex);
-}
-
-function filterNumbersAroundCursor(matches, cursorPosition) {
-  if (!matches) return;
-
-  for (const match of matches) {
-    const startOfSubstring = match.index;
-    const endOfSubstring = match.index + match[0].length - 1;
-
-    if (startOfSubstring > cursorPosition) return;
-
-    if (endOfSubstring >= cursorPosition - 1) {
-      return { start: startOfSubstring, end: endOfSubstring };
-    }
-  }
-
-  return;
-}
-
 export default {
   setup() {
     const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR);
@@ -110,35 +72,12 @@ export default {
       backgroundColor.value = getBackgroundColorFromUrl();
     });
 
-    function incrementNumericValueOnKeyPress (event) {
-      const increment = getIncrement(event.key, event.altKey);
-      const cursorPosition = getCursorPosition(event.target);
-      const numberPosition = filterNumbersAroundCursor(
-        getNumbersFromString(backgroundColor.value),
-        cursorPosition
+    function updateNumber(event) {
+      backgroundColor.value = incrementNumericValueOnKeyPress(
+        event,
+        backgroundColor.value
       );
-
-      if (!increment || !numberPosition || !cursorPosition) return;
-
-      const prefix = backgroundColor.value.substring(0, numberPosition.start);
-      let number = parseInt(
-        backgroundColor.value.substring(
-          numberPosition.start,
-          numberPosition.end + 1
-        ),
-        10
-      );
-      const suffix = backgroundColor.value.substring(numberPosition.end + 1);
-
-      number = Math.max(0, number + increment);
-
-      backgroundColor.value = prefix + number + suffix;
-
-      event.preventDefault();
-
-      nextTick(() => {
-        event.target.setSelectionRange(cursorPosition, cursorPosition);
-      });
+      restoreCursorPosition(event.target);
     }
 
     return {
@@ -146,7 +85,7 @@ export default {
       textColor,
       lineHeight,
       fontSize,
-      incrementNumericValueOnKeyPress,
+      updateNumber,
     };
   },
 };
