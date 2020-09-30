@@ -7,18 +7,23 @@
           backgroundColor
         }}</span>
         <label class="visually-hidden" for="color">enter a color</label>
-        <input type="text" v-model="backgroundColor" id="color" />
+        <input
+          type="text"
+          v-model="backgroundColor"
+          id="color"
+          @keydown="incrementNumericValueOnKeyPress"
+        />
       </span>
     </span>
   </main>
 </template>
 
 <script>
-import { onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import { readableColor } from "color2k";
 import queryString from "query-string";
 
-const DEFAULT_BACKGROUND_COLOR = "colors"
+const DEFAULT_BACKGROUND_COLOR = "colors";
 const DEFAULT_TEXT_COLOR = "black";
 const DEFAULT_LINE_HEIGHT = 1.3;
 const FONT_SIZE_BIG = 6; // vw
@@ -39,12 +44,53 @@ function getReadableTextSize(backgroundColor) {
 
 function getBackgroundColorFromUrl() {
   const parsedQueryString = queryString.parse(location.hash);
-  return parsedQueryString?.bgColor ? parsedQueryString.bgColor : DEFAULT_BACKGROUND_COLOR;
+  return parsedQueryString?.bgColor
+    ? parsedQueryString.bgColor
+    : DEFAULT_BACKGROUND_COLOR;
 }
 
 function setBackgroundColorInUrl(backgroundColor) {
-  const parameter = {bgColor: backgroundColor}
+  const parameter = { bgColor: backgroundColor };
   location.hash = queryString.stringify(parameter);
+}
+
+function getIncrement(keyCode, altKey) {
+  const stepSize = altKey ? 1 : 10;
+
+  switch (keyCode) {
+    case "ArrowUp":
+      return stepSize;
+    case "ArrowDown":
+      return -stepSize;
+    default:
+      return;
+  }
+}
+
+function getCursorPosition(element) {
+  return element.selectionStart;
+}
+
+function getNumbersFromString(text) {
+  const numberRegex = /[0-9]+/g;
+  return text.matchAll(numberRegex);
+}
+
+function filterNumbersAroundCursor(matches, cursorPosition) {
+  if (!matches) return;
+
+  for (const match of matches) {
+    const startOfSubstring = match.index;
+    const endOfSubstring = match.index + match[0].length - 1;
+
+    if (startOfSubstring > cursorPosition) return;
+
+    if (endOfSubstring >= cursorPosition - 1) {
+      return { start: startOfSubstring, end: endOfSubstring };
+    }
+  }
+
+  return;
 }
 
 export default {
@@ -64,11 +110,43 @@ export default {
       backgroundColor.value = getBackgroundColorFromUrl();
     });
 
+    function incrementNumericValueOnKeyPress (event) {
+      const increment = getIncrement(event.key, event.altKey);
+      const cursorPosition = getCursorPosition(event.target);
+      const numberPosition = filterNumbersAroundCursor(
+        getNumbersFromString(backgroundColor.value),
+        cursorPosition
+      );
+
+      if (!increment || !numberPosition || !cursorPosition) return;
+
+      const prefix = backgroundColor.value.substring(0, numberPosition.start);
+      let number = parseInt(
+        backgroundColor.value.substring(
+          numberPosition.start,
+          numberPosition.end + 1
+        ),
+        10
+      );
+      const suffix = backgroundColor.value.substring(numberPosition.end + 1);
+
+      number = Math.max(0, number + increment);
+
+      backgroundColor.value = prefix + number + suffix;
+
+      event.preventDefault();
+
+      nextTick(() => {
+        event.target.setSelectionRange(cursorPosition, cursorPosition);
+      });
+    }
+
     return {
       backgroundColor,
       textColor,
       lineHeight,
       fontSize,
+      incrementNumericValueOnKeyPress,
     };
   },
 };
