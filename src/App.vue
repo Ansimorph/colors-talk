@@ -22,7 +22,10 @@
 import { onMounted, ref, watch } from "vue";
 import { readableColor } from "color2k";
 import queryString from "query-string";
-import {restoreCursorPosition, incrementNumericValueOnKeyPress} from "./inputHelpers"
+import {
+  restoreCursorPosition,
+  incrementNumericValueOnKeyPress,
+} from "./inputHelpers";
 
 const DEFAULT_BACKGROUND_COLOR = "colors";
 const DEFAULT_TEXT_COLOR = "black";
@@ -73,11 +76,15 @@ export default {
     });
 
     function updateNumber(event) {
-      backgroundColor.value = incrementNumericValueOnKeyPress(
+      const updatedText = incrementNumericValueOnKeyPress(
         event,
         backgroundColor.value
       );
-      restoreCursorPosition(event.target);
+
+      if (updatedText) {
+        backgroundColor.value = updatedText;
+        restoreCursorPosition(event.target);
+      }
     }
 
     return {

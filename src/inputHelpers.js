@@ -58,7 +58,7 @@ function incrementNumericValueOnKeyPress(event, text) {
     cursorPosition
   );
 
-  if (!increment || !numberPosition || !cursorPosition) return text;
+  if (!increment || !numberPosition || !cursorPosition) return;
 
   const prefix = text.substring(0, numberPosition.start);
   let number = parseInt(
