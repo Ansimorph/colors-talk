@@ -1,21 +1,27 @@
 <template>
-  <main>
-    <span>
-      This is a talk about
-      <span class="input__wrapper">
-        <span class="input__dummy" aria-hidden="true">{{
-          backgroundColor
-        }}</span>
-        <label class="visually-hidden" for="color">enter a color</label>
-        <input
-          type="text"
-          v-model="backgroundColor"
-          id="color"
-          @keydown="updateNumber"
-        />
-      </span>
-    </span>
-  </main>
+  <div class="color-container">
+    <main>
+      <p>
+        This is a talk about
+        <span class="input__wrapper">
+          <span class="input__dummy" aria-hidden="true">{{
+            backgroundColor
+          }}</span>
+          <label class="visually-hidden" for="color">enter a color</label>
+          <input
+            type="text"
+            v-model="backgroundColor"
+            id="color"
+            @keydown="updateNumber"
+          />
+        </span>
+      </p>
+    </main>
+    <footer class="footer">
+      <span class="footer__name">Björn Ganslandt</span>
+      <span class="footer__twitter">@<a href="https://twitter.com/Ansimorph">Ansimorph</a></span>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -101,6 +107,7 @@ export default {
 <style lang="scss" vars="{ backgroundColor, textColor, lineHeight, fontSize }">
 $font-prefix: "./assets/fonts/plex/";
 @import "./assets/fonts/plex/scss/serif/regular/index";
+@import "./assets/fonts/plex/scss/serif/medium/index";
 
 *,
 *:after,
@@ -133,13 +140,11 @@ body {
   margin: 0;
 }
 
-main {
+.color-container {
   display: flex;
+  flex-direction: column;
   place-content: center;
   place-items: center;
-}
-
-main {
   width: 100%;
   height: 100%;
   padding: 2rem;
@@ -149,6 +154,27 @@ main {
   font-size: clamp(1rem, calc(var(--fontSize) * 1vw), 7rem);
   font-weight: 400;
   line-height: var(--lineHeight);
+}
+
+main {
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+footer {
+  align-self: end;
+  font-size: 1rem;
+  font-weight: 500;
+
+  a {
+    color: currentColor;
+  }
+}
+
+.footer__name {
+  margin-right: 0.6em;
+  letter-spacing: 0.01em;
 }
 
 .input__wrapper {
