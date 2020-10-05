@@ -7,7 +7,15 @@ export default function colorToFavIcon(backgroundColor) {
   icon.width = icon.height = FAVICON_SIZE;
 
   context.beginPath();
-  context.rect(0, 0, FAVICON_SIZE, FAVICON_SIZE);
+  context.ellipse(
+    FAVICON_SIZE / 2,
+    FAVICON_SIZE / 2,
+    FAVICON_SIZE / 2,
+    FAVICON_SIZE / 2,
+    0,
+    0,
+    Math.PI * 2
+  );
   context.fillStyle = backgroundColor;
   context.fill();
 
