@@ -1,6 +1,15 @@
+<template>
+  <teleport to="head">
+    <link rel="icon" :href="favIcon" />
+  </teleport>
+</template>
+
+<script>
+import { computed } from "vue";
+
 const FAVICON_SIZE = 64;
 
-export default function colorToFavIcon(backgroundColor) {
+function colorToFavIcon(backgroundColor) {
   const icon = document.createElement("canvas");
   const context = icon.getContext("2d");
 
@@ -21,3 +30,16 @@ export default function colorToFavIcon(backgroundColor) {
 
   return icon.toDataURL("image/x-icon");
 }
+
+export default {
+  props: {
+    backgroundColor: String,
+  },
+  setup(props) {
+    const favIcon = computed(() => colorToFavIcon(props.backgroundColor));
+    return {
+      favIcon,
+    }
+  }
+}
+</script>

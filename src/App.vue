@@ -8,23 +8,17 @@
           />
       </p>
     </main>
-    <footer class="footer">
-      <span class="footer__name">Björn Ganslandt</span>
-      <span class="footer__twitter"
-        >@<a href="https://twitter.com/Ansimorph">Ansimorph</a></span
-      >
-    </footer>
+    <FooterElement />
   </div>
-  <teleport to="head">
-    <link rel="icon" :href="favIcon" />
-  </teleport>
+  <FavIcon :backgroundColor="backgroundColor" />
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { readableColor } from "color2k";
-import colorToFavIcon from "./colorToFavicon";
 import InputText from "./components/InputText"
+import FooterElement from './components/FooterElement';
+import FavIcon from "./components/FavIcon"
 
 const DEFAULT_TEXT_COLOR = "black";
 const DEFAULT_LINE_HEIGHT = 1.3;
@@ -47,14 +41,14 @@ function getReadableTextSize(backgroundColor) {
 export default {
   components: {
     InputText,
+    FooterElement,
+    FavIcon,
   },
   setup() {
     const backgroundColor = ref(null);
     const textColor = ref(DEFAULT_TEXT_COLOR);
     const lineHeight = ref(DEFAULT_LINE_HEIGHT);
     const fontSize = ref(FONT_SIZE_BIG);
-
-    const favIcon = computed(() => colorToFavIcon(backgroundColor.value));
 
     function updateBackgroundColor(newBackgroundColor) {
       textColor.value = getReadableTextColor(newBackgroundColor);
@@ -67,7 +61,6 @@ export default {
       textColor,
       lineHeight,
       fontSize,
-      favIcon,
       updateBackgroundColor,
     };
   },
@@ -130,20 +123,5 @@ main {
   display: flex;
   place-content: center;
   place-items: center;
-}
-
-footer {
-  align-self: flex-end;
-  font-size: 1rem;
-  font-weight: 500;
-
-  a {
-    color: currentColor;
-  }
-}
-
-.footer__name {
-  margin-right: 0.6em;
-  letter-spacing: 0.01em;
 }
 </style>
