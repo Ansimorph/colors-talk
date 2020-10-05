@@ -1,11 +1,13 @@
+const FAVICON_SIZE = 64;
+
 export default function colorToFavIcon(backgroundColor) {
-  let icon, context;
-  (icon = document.createElement("canvas")),
-    (icon.width = icon.height = 64),
-    (context = icon.getContext("2d"));
+  const icon = document.createElement("canvas");
+  const context = icon.getContext("2d");
+
+  icon.width = icon.height = FAVICON_SIZE;
 
   context.beginPath();
-  context.rect(4, 4, 60, 60);
+  context.rect(0, 0, FAVICON_SIZE, FAVICON_SIZE);
   context.fillStyle = backgroundColor;
   context.fill();
 
