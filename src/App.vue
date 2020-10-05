@@ -163,7 +163,7 @@ main {
 }
 
 footer {
-  align-self: end;
+  align-self: flex-end;
   font-size: 1rem;
   font-weight: 500;
 
