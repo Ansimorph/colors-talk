@@ -19,19 +19,25 @@
     </main>
     <footer class="footer">
       <span class="footer__name">Björn Ganslandt</span>
-      <span class="footer__twitter">@<a href="https://twitter.com/Ansimorph">Ansimorph</a></span>
+      <span class="footer__twitter"
+        >@<a href="https://twitter.com/Ansimorph">Ansimorph</a></span
+      >
     </footer>
   </div>
+  <teleport to="head">
+    <link rel="icon" :href="favIcon" />
+  </teleport>
 </template>
 
 <script>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { readableColor } from "color2k";
 import queryString from "query-string";
 import {
   restoreCursorPosition,
   incrementNumericValueOnKeyPress,
 } from "./inputHelpers";
+import colorToFavIcon from "./colorToFavicon";
 
 const DEFAULT_BACKGROUND_COLOR = "colors";
 const DEFAULT_TEXT_COLOR = "black";
@@ -77,6 +83,8 @@ export default {
       setBackgroundColorInUrl(newBackgroundColor);
     });
 
+    const favIcon = computed(() => colorToFavIcon(backgroundColor.value));
+
     onMounted(() => {
       backgroundColor.value = getBackgroundColorFromUrl();
     });
@@ -99,6 +107,7 @@ export default {
       lineHeight,
       fontSize,
       updateNumber,
+      favIcon,
     };
   },
 };
