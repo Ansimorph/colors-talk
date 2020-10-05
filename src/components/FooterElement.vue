@@ -7,7 +7,7 @@
   </footer>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 footer {
   align-self: flex-end;
   font-size: 1rem;

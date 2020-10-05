@@ -67,7 +67,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .input__wrapper {
   --border-width: clamp(0.1rem, calc(var(--fontSize) * 0.1vw), 0.5rem);
 
