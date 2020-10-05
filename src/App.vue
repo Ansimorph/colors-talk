@@ -9,6 +9,7 @@
           }}</span>
           <label class="visually-hidden" for="color">enter a color</label>
           <input
+            spellcheck="false"
             type="text"
             v-model="backgroundColor"
             id="color"
