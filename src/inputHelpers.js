@@ -51,6 +51,8 @@ function restoreCursorPosition(element) {
 }
 
 function incrementNumericValueOnKeyPress(event, text) {
+  if (!text) return
+
   const increment = getIncrement(event.key, event.altKey);
   const cursorPosition = getCursorPosition(event.target);
   const numberPosition = filterNumbersAroundCursor(

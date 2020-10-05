@@ -3,19 +3,9 @@
     <main>
       <p>
         This is a talk about
-        <span class="input__wrapper">
-          <span class="input__dummy" aria-hidden="true">{{
-            backgroundColor
-          }}</span>
-          <label class="visually-hidden" for="color">enter a color</label>
-          <input
-            spellcheck="false"
-            type="text"
-            v-model="backgroundColor"
-            id="color"
-            @keydown="updateNumber"
+          <InputText
+            @color-change="updateBackgroundColor($event)"
           />
-        </span>
       </p>
     </main>
     <footer class="footer">
@@ -31,16 +21,11 @@
 </template>
 
 <script>
-import { onMounted, ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 import { readableColor } from "color2k";
-import queryString from "query-string";
-import {
-  restoreCursorPosition,
-  incrementNumericValueOnKeyPress,
-} from "./inputHelpers";
 import colorToFavIcon from "./colorToFavicon";
+import InputText from "./components/InputText"
 
-const DEFAULT_BACKGROUND_COLOR = "colors";
 const DEFAULT_TEXT_COLOR = "black";
 const DEFAULT_LINE_HEIGHT = 1.3;
 const FONT_SIZE_BIG = 6; // vw
@@ -59,47 +44,22 @@ function getReadableTextSize(backgroundColor) {
   return backgroundColor.length > 8 ? FONT_SIZE_SMALL : FONT_SIZE_BIG;
 }
 
-function getBackgroundColorFromUrl() {
-  const parsedQueryString = queryString.parse(location.hash);
-  return parsedQueryString?.bgColor
-    ? parsedQueryString.bgColor
-    : DEFAULT_BACKGROUND_COLOR;
-}
-
-function setBackgroundColorInUrl(backgroundColor) {
-  const parameter = { bgColor: backgroundColor };
-  location.hash = queryString.stringify(parameter);
-}
-
 export default {
+  components: {
+    InputText,
+  },
   setup() {
-    const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR);
+    const backgroundColor = ref(null);
     const textColor = ref(DEFAULT_TEXT_COLOR);
     const lineHeight = ref(DEFAULT_LINE_HEIGHT);
     const fontSize = ref(FONT_SIZE_BIG);
 
-    watch(backgroundColor, (newBackgroundColor) => {
-      textColor.value = getReadableTextColor(newBackgroundColor);
-      fontSize.value = getReadableTextSize(newBackgroundColor);
-      setBackgroundColorInUrl(newBackgroundColor);
-    });
-
     const favIcon = computed(() => colorToFavIcon(backgroundColor.value));
 
-    onMounted(() => {
-      backgroundColor.value = getBackgroundColorFromUrl();
-    });
-
-    function updateNumber(event) {
-      const updatedText = incrementNumericValueOnKeyPress(
-        event,
-        backgroundColor.value
-      );
-
-      if (updatedText) {
-        backgroundColor.value = updatedText;
-        restoreCursorPosition(event.target);
-      }
+    function updateBackgroundColor(newBackgroundColor) {
+      textColor.value = getReadableTextColor(newBackgroundColor);
+      fontSize.value = getReadableTextSize(newBackgroundColor);
+      backgroundColor.value = newBackgroundColor;
     }
 
     return {
@@ -107,8 +67,8 @@ export default {
       textColor,
       lineHeight,
       fontSize,
-      updateNumber,
       favIcon,
+      updateBackgroundColor,
     };
   },
 };
@@ -185,52 +145,5 @@ footer {
 .footer__name {
   margin-right: 0.6em;
   letter-spacing: 0.01em;
-}
-
-.input__wrapper {
-  --border-width: clamp(0.1rem, calc(var(--fontSize) * 0.1vw), 0.5rem);
-
-  display: inline-flex;
-  position: relative;
-  border: var(--border-width) solid currentColor;
-
-  &:focus-within {
-    border: var(--border-width) solid turquoise;
-  }
-}
-
-.input__dummy {
-  min-width: 2ch;
-  min-height: calc(var(--lineHeight) * 1em);
-  visibility: hidden;
-
-  // The dummy needs a character, otherwise the field will jump when empty
-  &:empty::before {
-    content: "l";
-  }
-}
-
-.input__dummy,
-input {
-  padding: 0 0.5rem;
-}
-
-input {
-  display: block;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: inherit;
-  font-family: inherit;
-  line-height: inherit;
-  border: none;
-  background-color: initial;
-  color: currentColor;
-
-  &:focus {
-    outline: none;
-  }
 }
 </style>
