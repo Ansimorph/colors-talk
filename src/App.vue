@@ -3,9 +3,7 @@
     <main>
       <p>
         This is a talk about
-          <InputText
-            @color-change="updateBackgroundColor($event)"
-          />
+        <InputText @color-change="updateBackgroundColor($event)" />
       </p>
     </main>
     <FooterElement />
@@ -16,9 +14,9 @@
 <script>
 import { ref } from "vue";
 import { readableColor } from "color2k";
-import InputText from "./components/InputText"
-import FooterElement from './components/FooterElement';
-import FavIcon from "./components/FavIcon"
+import InputText from "./components/InputText";
+import FooterElement from "./components/FooterElement";
+import FavIcon from "./components/FavIcon";
 
 const DEFAULT_TEXT_COLOR = "black";
 const DEFAULT_LINE_HEIGHT = 1.3;
@@ -112,6 +110,7 @@ body {
   height: 100%;
   padding: 2rem;
   color: var(--textColor);
+  color: color-contrast(var(--backgroundColor) vs white, black);
   background-color: var(--backgroundColor);
   font-family: "IBM Plex Serif", Helvetica, sans-serif;
   font-size: clamp(1rem, calc(var(--fontSize) * 1vw), 7rem);
