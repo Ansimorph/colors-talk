@@ -1,9 +1,7 @@
 <template>
   <footer class="footer">
     <span class="footer__name">Björn Ganslandt</span>
-    <span class="footer__twitter"
-      >@<a href="https://twitter.com/Ansimorph">Ansimorph</a></span
-    >
+    <a href="https://ganslandt.xyz">ganslandt.xyz</a>
   </footer>
 </template>
 
@@ -19,7 +17,7 @@ footer {
 }
 
 .footer__name {
-  margin-right: 0.6em;
+  margin-right: 1em;
   letter-spacing: 0.01em;
 }
 </style>
